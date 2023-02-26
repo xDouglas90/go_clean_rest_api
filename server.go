@@ -11,8 +11,9 @@ import (
 func main() {
 	r := mux.NewRouter()
 	p := ":8080"
-	s := r.PathPrefix("/api").Subrouter()
+	s := r.PathPrefix("/api/v1").Subrouter()
 	s.HandleFunc("/", controllers.HomeHandler)
+	s.HandleFunc("/posts", controllers.PostsHandler).Methods("GET")
 	log.Println("Listening on port " + p)
 	log.Fatalln(http.ListenAndServe(p, s))
 	http.ListenAndServe(p, s)
