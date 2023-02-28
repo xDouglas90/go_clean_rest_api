@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	controller "github.com/xdouglas90/gomux-rest-api/controllers"
-	router "github.com/xdouglas90/gomux-rest-api/http"
+	router "github.com/xdouglas90/gomux-rest-api/http/router"
 )
 
 var (
 	postController controller.PostController = controller.NewPostController()
-	httpRouter     router.Router             = router.NewMuxRouter()
+	httpRouter     router.Router             = router.NewChiRouter()
 )
 
 func main() {
