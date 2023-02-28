@@ -1,21 +1,26 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
-	"github.com/xdouglas90/gomux-rest-api/controllers"
+	controller "github.com/xdouglas90/gomux-rest-api/controllers"
+	router "github.com/xdouglas90/gomux-rest-api/http"
+)
+
+var (
+	postController controller.PostController = controller.NewPostController()
+	httpRouter     router.Router             = router.NewMuxRouter()
 )
 
 func main() {
-	r := mux.NewRouter()
-	p := ":8080"
-	s := r.PathPrefix("/api/v1").Subrouter()
-	s.HandleFunc("/", controllers.HomeHandler).Methods("GET")
-	s.HandleFunc("/posts", controllers.PostsHandler).Methods("GET")
-	s.HandleFunc("/posts", controllers.AddPost).Methods("POST")
-	log.Println("Listening on port " + p)
-	log.Fatalln(http.ListenAndServe(p, s))
-	http.ListenAndServe(p, s)
+	const port string = ":8080"
+	// s := router.PathPrefix("/api/v1").Subrouter()
+	httpRouter.GET("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "Up and running...")
+	})
+	httpRouter.GET("/posts", postController.GetPosts)
+	httpRouter.POST("/posts", postController.AddPost)
+
+	httpRouter.SERVE(port)
 }
