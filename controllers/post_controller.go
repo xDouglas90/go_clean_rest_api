@@ -9,7 +9,7 @@ import (
 	"github.com/xdouglas90/gomux-rest-api/service"
 )
 
-var postService service.PostService = service.NewPostService()
+var postService service.PostService
 
 type PostController interface {
 	GetPosts(w http.ResponseWriter, r *http.Request)
@@ -18,7 +18,8 @@ type PostController interface {
 
 type controller struct{}
 
-func NewPostController() PostController {
+func NewPostController(service service.PostService) PostController {
+	postService = service
 	return &controller{}
 }
 
