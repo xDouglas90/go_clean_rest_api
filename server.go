@@ -6,11 +6,13 @@ import (
 
 	controller "github.com/xdouglas90/gomux-rest-api/controllers"
 	router "github.com/xdouglas90/gomux-rest-api/http/router"
+	"github.com/xdouglas90/gomux-rest-api/repository"
 	"github.com/xdouglas90/gomux-rest-api/service"
 )
 
 var (
-	postService    service.PostService       = service.NewPostService()
+	postRepository repository.PostRepository = repository.NewFirestoreRepository()
+	postService    service.PostService       = service.NewPostService(postRepository)
 	postController controller.PostController = controller.NewPostController(postService)
 	httpRouter     router.Router             = router.NewChiRouter()
 )
