@@ -8,6 +8,7 @@ import (
 	"github.com/xdouglas90/gomux-rest-api/entity"
 
 	"cloud.google.com/go/firestore"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
 
@@ -55,15 +56,22 @@ func (*repo) FindAll() ([]entity.Post, error) {
 	defer client.Close()
 
 	var posts []entity.Post
-	iterator := client.Collection(collecionName).Documents(ctx)
+	it := client.Collection(collecionName).Documents(ctx)
 	for {
-		doc, err := iterator.Next()
+		doc, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
 		if err != nil {
 			log.Fatalf("failed to iterate the list of posts: %v", err)
 			return nil, err
 		}
-		var post entity.Post
-		doc.DataTo(&post)
+
+		post := entity.Post{
+			ID:      doc.Data()["ID"].(int64),
+			Title:   doc.Data()["Title"].(string),
+			Content: doc.Data()["Text"].(string),
+		}
 		posts = append(posts, post)
 	}
 
