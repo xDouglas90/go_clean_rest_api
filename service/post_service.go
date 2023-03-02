@@ -19,7 +19,7 @@ type service struct{}
 var postRepo repository.PostRepository
 
 func NewPostService(repo repository.PostRepository) PostService {
-	repo = postRepo
+	postRepo = repo
 	return &service{}
 }
 
