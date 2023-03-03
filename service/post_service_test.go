@@ -13,7 +13,7 @@ type MockPostRepository struct {
 }
 
 func (mock *MockPostRepository) Save(post *entity.Post) (*entity.Post, error) {
-	args := mock.Called(post)
+	args := mock.Called()
 	result := args.Get(0)
 
 	return result.(*entity.Post), args.Error(1)
@@ -47,13 +47,26 @@ func TestFindAll(t *testing.T) {
 	assert.Equal(t, "Hello World", result[0].Content)
 }
 
-// func TestSave(t *testing.T) {
-// 	mockRepo := new(MockPostRepository)
-// 	post := entity.Post{ID: 1, Title: "Test", Content: "Hello World"}
+func TestCreate(t *testing.T) {
+	mockRepo := new(MockPostRepository)
+	post := entity.Post{Title: "Test", Content: "Hello World"}
 
-// 	// Setup expectations
-// 	mockRepo.On("FindAll").Return(entity.Post{post}, nil)
-// }
+	// Setup expectations
+	mockRepo.On("Save").Return(&post, nil)
+
+	testService := NewPostService(mockRepo)
+
+	result, err := testService.Create(&post)
+
+	// Mock Assertion: Behavioral
+	mockRepo.AssertExpectations(t)
+
+	// Data Assertion
+	assert.NotNil(t, result.ID)
+	assert.Equal(t, "Test", result.Title)
+	assert.Equal(t, "Hello World", result.Content)
+	assert.Nil(t, err)
+}
 
 func TestValidateEmptyPost(t *testing.T) {
 	testService := NewPostService(nil)
