@@ -55,12 +55,52 @@ func TestAddPost(t *testing.T) {
 	assert.NotNil(t, CONTENT, post.Content)
 
 	// Clean up database
-	cleanUpDatabase(&post)
+	tearDown(post.ID)
+}
+
+func setup() {
+	postRepo.Save(&entity.Post{Title: TITLE, Content: CONTENT})
+}
+
+func tearDown(postID int64) {
+	var post entity.Post = entity.Post{
+		ID: postID,
+	}
+	postRepo.Delete(&post)
 }
 
 func TestGetPosts(t *testing.T) {
-}
+	// Insert new post into database
+	setup()
 
-func cleanUpDatabase(post *entity.Post) {
-	postRepo.Delete(post)
+	// Create a new HTTP GET request
+	req, _ := http.NewRequest("GET", "/posts", nil)
+
+	// Assign HTTP Handler function (controller GetPosts function)
+	handler := http.HandlerFunc(postController.GetPosts)
+
+	// Record HTTP Response (httptest)
+	res := httptest.NewRecorder()
+
+	// Dispatch HTTP request
+	handler.ServeHTTP(res, req)
+
+	// Add Assertions on the HTTP Status code and the response
+	status := res.Code
+	if status != http.StatusOK {
+		t.Errorf("handler returned a wrong status code: got %v want %v", status, http.StatusOK)
+	}
+
+	// Decode the HTTP response
+	var posts []entity.Post
+	json.NewDecoder(io.Reader(res.Body)).Decode(&posts)
+
+	// Assert HTTP response
+	assert.NotNil(t, posts[0].ID)
+	assert.NotNil(t, posts[0].Title)
+	assert.NotNil(t, posts[0].Content)
+	assert.Equal(t, 1, len(posts))
+
+	// Clean up database
+	tearDown(posts[0].ID)
 }
