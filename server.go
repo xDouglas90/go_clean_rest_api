@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"net/http"
 
-	controller "github.com/xdouglas90/gomux-rest-api/controllers"
+	controller "github.com/xdouglas90/gomux-rest-api/controller"
 	router "github.com/xdouglas90/gomux-rest-api/http/router"
 	"github.com/xdouglas90/gomux-rest-api/repository"
 	"github.com/xdouglas90/gomux-rest-api/service"
 )
 
 var (
-	postRepository repository.PostRepository = repository.NewFirestoreRepository()
+	postRepository repository.PostRepository = repository.NewSQLiteRepository()
 	postService    service.PostService       = service.NewPostService(postRepository)
 	postController controller.PostController = controller.NewPostController(postService)
-	httpRouter     router.Router             = router.NewChiRouter()
+	httpRouter     router.Router             = router.NewMuxRouter()
 )
 
 func main() {
