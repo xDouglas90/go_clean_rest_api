@@ -6,10 +6,10 @@ import (
 
 	"github.com/xdouglas90/gomux-rest-api/entity"
 	"github.com/xdouglas90/gomux-rest-api/errors"
-	"github.com/xdouglas90/gomux-rest-api/service"
+	post_service "github.com/xdouglas90/gomux-rest-api/service"
 )
 
-var postService service.PostService
+var postService post_service.PostService
 
 type PostController interface {
 	GetPosts(w http.ResponseWriter, r *http.Request)
@@ -18,7 +18,7 @@ type PostController interface {
 
 type controller struct{}
 
-func NewPostController(service service.PostService) PostController {
+func NewPostController(service post_service.PostService) PostController {
 	postService = service
 	return &controller{}
 }
@@ -39,24 +39,24 @@ func (*controller) GetPosts(w http.ResponseWriter, r *http.Request) {
 
 func (*controller) AddPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
+	var err error
 	var post entity.Post
-	err := json.NewDecoder(r.Body).Decode(&post)
+	err = json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(errors.ServiceError{Message: "error unmarshalling the request"})
 		return
 	}
 
-	error := postService.Validate(&post)
-	if error != nil {
+	err = postService.Validate(&post)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(errors.ServiceError{Message: error.Error()})
+		json.NewEncoder(w).Encode(errors.ServiceError{Message: err.Error()})
 		return
 	}
 
-	result, postErr := postService.Create(&post)
-	if postErr != nil {
+	result, err := postService.Create(&post)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(errors.ServiceError{Message: "error saving the post"})
 		return
