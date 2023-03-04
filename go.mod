@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/firestore v1.9.0
 	github.com/go-chi/chi v1.5.4
 	github.com/gorilla/mux v1.8.0
+	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/stretchr/testify v1.8.2
 	google.golang.org/api v0.111.0
