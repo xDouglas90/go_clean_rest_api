@@ -6,6 +6,8 @@ require (
 	cloud.google.com/go/firestore v1.9.0
 	github.com/go-chi/chi v1.5.4
 	github.com/gorilla/mux v1.8.0
+	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/stretchr/testify v1.8.2
 	google.golang.org/api v0.111.0
 )
 
@@ -20,10 +22,8 @@ require (
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
-	github.com/mattn/go-sqlite3 v1.14.16 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
-	github.com/stretchr/testify v1.8.2 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/oauth2 v0.5.0 // indirect
