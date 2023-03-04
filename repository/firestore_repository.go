@@ -88,3 +88,8 @@ func getClient(ctx context.Context) (*firestore.Client, error) {
 
 	return client, nil
 }
+
+// Delete: TODO
+func (r *repo) Delete(post *entity.Post) error {
+	return nil
+}
