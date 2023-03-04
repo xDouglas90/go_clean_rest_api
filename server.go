@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	controller "github.com/xdouglas90/gomux-rest-api/controller"
 	router "github.com/xdouglas90/gomux-rest-api/http/router"
 	"github.com/xdouglas90/gomux-rest-api/repository"
@@ -18,13 +19,12 @@ var (
 )
 
 func main() {
-	const port string = ":8080"
-	// s := router.PathPrefix("/api/v1").Subrouter()
-	httpRouter.GET("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Up and running...")
-	})
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
 	httpRouter.GET("/posts", postController.GetPosts)
 	httpRouter.POST("/posts", postController.AddPost)
-
-	httpRouter.SERVE(port)
+	httpRouter.SERVE(os.Getenv("PORT"))
 }
